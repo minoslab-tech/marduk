@@ -1,14 +1,5 @@
-import { prisma } from "@/lib/db";
+import { redirect } from "next/navigation"
 
-export default async function Home() {
-  // Database call
-  const users = await prisma.user.findMany()
-  return (
-    <main>
-      <h1>Users</h1>
-      <pre>
-        {JSON.stringify(users, null, 2)}
-      </pre>
-    </main>
-  );
+export default function Home() {
+  redirect("/auth/login")
 }
