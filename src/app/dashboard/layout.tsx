@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           userRole="Administrador"
           notificationCount={27}
         />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-x-hidden">
 
           <div className="p-6 lg:p-8">
             <Suspense fallback={<div className="h-20" />}>

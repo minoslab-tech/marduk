@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
+// import { prisma } from "@/lib/prisma"
 import crypto from "crypto"
-import { prisma } from "@/lib/db"
 
-export const runtime = "nodejs"
+const prisma: any = {}
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,13 +28,13 @@ export async function POST(request: NextRequest) {
     const resetToken = crypto.randomBytes(32).toString("hex")
     const resetTokenExpiry = new Date(Date.now() + 3600000) // 1 hora
 
-    // await prisma.user.update({
-    //   where: { id: user.id },
-    //   data: {
-    //     resetToken,
-    //     resetTokenExpiry,
-    //   },
-    // })
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetToken,
+        resetTokenExpiry,
+      },
+    })
 
     // TODO: Enviar email com link de recuperação
     // const resetUrl = `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${resetToken}`

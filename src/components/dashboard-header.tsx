@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { Bell, Settings } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -19,6 +20,7 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ userName, userRole, notificationCount = 0 }: DashboardHeaderProps) {
+  const router = useRouter()
   const initials = userName
     .split(" ")
     .map((n) => n[0])
@@ -73,7 +75,9 @@ export function DashboardHeader({ userName, userRole, notificationCount = 0 }: D
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Perfil</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>
+                Perfil
+              </DropdownMenuItem>
               <DropdownMenuItem>Configurações</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-red-600">Sair</DropdownMenuItem>

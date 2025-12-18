@@ -29,12 +29,11 @@ export default function AuthLayout({
               className="drop-shadow-2xl"
             />
           </div>
-          <h1 className="mb-4 text-4xl font-bold">Minos</h1>
-          <p className="mb-8 text-xl text-blue-100">Sistema de Gestão</p>
+          <h1 className="mb-4 text-4xl font-bold">Marduk</h1>
+          <p className="mb-8 text-xl text-blue-100">Sistema de Jogadores</p>
           <div className="rounded-lg bg-white/10 p-6 backdrop-blur-sm">
             <p className="text-sm leading-relaxed">
-              Plataforma completa para gerenciamento de vagas em creches e
-              instituições educacionais.
+              Plataforma completa para gerenciamento de Jogadores
             </p>
           </div>
         </div>
