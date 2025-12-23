@@ -70,7 +70,7 @@ export default function DashboardPage() {
         onComplete={handleFirstAccessComplete}
       />
 
-      <div className="space-y-6 max-w-5xl mx-auto">
+      <div className="space-y-6">
         {/* Próxima Partida */}
         <div>
           <h2 className="text-gray-500 text-sm font-medium mb-3">Próxima Partida</h2>
