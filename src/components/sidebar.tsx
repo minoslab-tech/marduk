@@ -26,7 +26,7 @@ const menuItems = [
   {
     title: "Estatísticas",
     icon: BarChart,
-    href: "/dashboard/stats",
+    href: "/dashboard/statistics",
   },
   {
     title: "Meu Time",
