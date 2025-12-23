@@ -12,7 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Filter, MoreVertical, Plus, Search } from "lucide-react"
+import { Filter, MoreVertical, Plus, Search, X } from "lucide-react"
 
 type Player = {
   name: string
@@ -80,8 +80,8 @@ export default function PlayersPage() {
   }
 
   return (
-
-    <div className="space-y-6 ">
+    <div className="space-y-6">
+      {/* Filtro e busca */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
@@ -114,96 +114,133 @@ export default function PlayersPage() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="space-y-3">
 
-        {players.map((player) => (
-          <div
-            key={`${player.name}-${player.position}`}
-            className="bg-white rounded-xl border shadow-sm p-4 flex items-center justify-between hover:shadow-md transition-shadow relative"
-            role="listitem"
-          >
-            <Link href="/dashboard/players/detailsplayers" className="absolute inset-0 z-10 rounded-xl" aria-label="Abrir detalhes do jogador">
-              <span className="sr-only">Abrir detalhes do jogador</span>
-            </Link>
-            <div className="relative flex items-center gap-4">
-              <Avatar className="size-12">
-                <AvatarFallback className="bg-green-100 text-green-700 font-semibold">
-                  {getInitials(player.name)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="relative">
-                <p className="text-sm font-medium  text-gray-900">{player.name}</p>
-                <p className="text-xs text-gray-600">{player.position}</p>
-              </div>
-            </div>
+      {/* Lista padronizada em Card com linhas divididas */}
+      <div className="bg-white border border-slate-100 rounded-2xl shadow-[0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden">
+        <div className="divide-y divide-slate-100">
+          {players.map((player) => (
+            <div
+              key={`${player.name}-${player.position}`}
+              className="p-4 flex items-center justify-between relative"
+              role="listitem"
+            >
+              <Link
+                href="/dashboard/players/detailsplayers"
+                className="absolute inset-0 z-10"
+                aria-label="Abrir detalhes do jogador"
+              >
+                <span className="sr-only">Abrir detalhes do jogador</span>
+              </Link>
 
-            <div className="flex items-center gap-4 relative z-20">
-              <div className="flex items-center gap-1.5 text-sm text-gray-700">
-                <span className="inline-block size-3 rounded-full bg-yellow-400" aria-hidden />
-                <span className="min-w-4 text-center">{player.yellowCards}</span>
-              </div>
-              {player.redCards > 0 && (
-                <div className="flex items-center gap-1.5 text-sm text-gray-700">
-                  <span className="inline-block size-3 rounded-full bg-red-500" aria-hidden />
-                  <span className="min-w-4 text-center">{player.redCards}</span>
+              <div className="relative z-20 flex items-center gap-4">
+                <Avatar className="size-12">
+                  <AvatarFallback className="bg-emerald-50 text-emerald-700 font-semibold">
+                    {getInitials(player.name)}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{player.name}</p>
+                  <p className="text-xs text-slate-600">{player.position}</p>
                 </div>
-              )}
+              </div>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" aria-label="Ações do jogador" onClick={(e) => e.stopPropagation()}>
-                    <MoreVertical className="size-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onSelect={() => {}}>Editar</DropdownMenuItem>
-                  <DropdownMenuItem variant="destructive" onSelect={() => {}}>Remover</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <div className="flex items-center gap-4 relative z-20">
+                <div className="flex items-center gap-1.5 text-sm text-slate-700">
+                  <span className="inline-block size-3 rounded-full bg-yellow-400" aria-hidden />
+                  <span className="min-w-4 text-center">{player.yellowCards}</span>
+                </div>
+                {player.redCards > 0 && (
+                  <div className="flex items-center gap-1.5 text-sm text-slate-700">
+                    <span className="inline-block size-3 rounded-full bg-red-500" aria-hidden />
+                    <span className="min-w-4 text-center">{player.redCards}</span>
+                  </div>
+                )}
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Ações do jogador"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <MoreVertical className="size-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onSelect={() => { }}>Editar</DropdownMenuItem>
+                    <DropdownMenuItem variant="destructive" onSelect={() => { }}>Remover</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
-      <Button
-        className="fixed bottom-6 right-6 bg-yellow-400 text-black hover:bg-yellow-500 shadow-md px-5 py-6 rounded-full"
+      {/* Ação Flutuante padronizada com Partidas */}
+      <button
         onClick={() => setModalOpen(true)}
+        className="fixed bottom-6 right-6 bg-yellow-500 hover:bg-yellow-600 text-white rounded-full px-5 py-4 shadow-lg flex items-center gap-2 font-medium transition-colors z-50"
       >
-        <Plus className="size-5" />
-        Novo Jogador
-      </Button>
+        <Plus className="h-5 w-5" />
+        <span>Novo Jogador</span>
+      </button>
 
       {modalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl border shadow-lg w-full max-w-md p-6">
-            <p className="text-lg font-semibold">Novo Jogador</p>
-            <form className="mt-4 space-y-4" onSubmit={handleCreatePlayer}>
-              <div className="space-y-2">
-                <Label htmlFor="nome_completo">Nome completo</Label>
-                <Input id="nome_completo" name="nome_completo" placeholder="Ex: João Silva" required />
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setModalOpen(false)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header (igual ao de Partidas) */}
+            <div className="bg-blue-600 text-white px-6 py-4 rounded-t-lg flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold">Novo Jogador</h2>
+                <p className="text-white/90 text-sm">Cadastre um novo jogador</p>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="posicao_principal">Posição principal</Label>
-                <Input id="posicao_principal" name="posicao_principal" placeholder="Ex: Atacante" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="pe_dominante">Pé dominante</Label>
-                <Input id="pe_dominante" name="pe_dominante" placeholder="Direito/Esquerdo" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="data_nascimento">Data de nascimento</Label>
-                <Input id="data_nascimento" name="data_nascimento" type="date" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="telefone">Telefone</Label>
-                <Input id="telefone" name="telefone" type="tel" placeholder="(00) 00000-0000" />
-              </div>
+              <button
+                onClick={() => setModalOpen(false)}
+                className="text-white hover:text-white/80 transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
 
-              <div className="flex justify-end gap-2 pt-2">
-                <Button type="button" variant="outline" onClick={() => setModalOpen(false)}>Cancelar</Button>
-                <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700">Salvar</Button>
-              </div>
-            </form>
+            {/* Modal Content */}
+            <div className="p-6">
+              <form className="space-y-6" onSubmit={handleCreatePlayer}>
+                <div className="space-y-2">
+                  <Label htmlFor="nome_completo">Nome completo</Label>
+                  <Input id="nome_completo" name="nome_completo" placeholder="Ex: João Silva" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="posicao_principal">Posição principal</Label>
+                  <Input id="posicao_principal" name="posicao_principal" placeholder="Ex: Atacante" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pe_dominante">Pé dominante</Label>
+                  <Input id="pe_dominante" name="pe_dominante" placeholder="Direito/Esquerdo" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="data_nascimento">Data de nascimento</Label>
+                  <Input id="data_nascimento" name="data_nascimento" type="date" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="telefone">Telefone</Label>
+                  <Input id="telefone" name="telefone" type="tel" placeholder="(00) 00000-0000" />
+                </div>
+
+                {/* Buttons (igual ao de Partidas) */}
+                <div className="flex gap-4 pt-4 justify-end">
+                  <Button type="button" variant="outline" onClick={() => setModalOpen(false)}>Cancelar</Button>
+                  <Button type="submit" className="bg-green-500 hover:bg-green-600 text-white">Salvar</Button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
