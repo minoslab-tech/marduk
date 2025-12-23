@@ -1,6 +1,6 @@
 "use client"
- import { useState } from 'react';
- import { TrendingUp, Trophy, Target, Activity, Users, Calendar } from 'lucide-react';
+import { useState } from 'react';
+import { TrendingUp, Trophy, Target, Activity, Users, Calendar } from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -14,7 +14,7 @@ import {
   Legend
 } from 'recharts';
 
- 
+
 
 // Mock data para demonstração
 const teamStats = {
@@ -68,62 +68,51 @@ export default function StatisticsPage() {
   const teamName = 'Garra FC';
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20">
-      {/* Header */}
-      <header className="bg-slate-900 text-white px-4 py-6 shadow-lg">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-sm text-slate-300 mb-1">MeuTime FC</div>
-          <h1>Estatísticas do {teamName}</h1>
-          <div className="text-sm text-slate-400 mt-2">
-            Temporada 2024 • {teamStats.totalMatches} Jogos
-          </div>
-        </div>
-      </header>
-
-      {/* Tabs */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto flex">
+    <div className="space-y-6">
+      {/* Tabs inline padronizadas */}
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="flex">
           <button
             onClick={() => setSelectedTab('geral')}
-            className={`flex-1 py-4 text-center transition-colors ${
-              selectedTab === 'geral'
-                ? 'text-emerald-600 border-b-2 border-emerald-600'
-                : 'text-slate-600'
-            }`}
+            className={`flex-1 py-3 text-center text-sm font-medium relative transition-colors ${selectedTab === 'geral' ? 'text-emerald-600' : 'text-slate-600 hover:text-slate-800'
+              }`}
           >
             GERAL
+            {selectedTab === 'geral' && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />
+            )}
           </button>
           <button
             onClick={() => setSelectedTab('jogadores')}
-            className={`flex-1 py-4 text-center transition-colors ${
-              selectedTab === 'jogadores'
-                ? 'text-emerald-600 border-b-2 border-emerald-600'
-                : 'text-slate-600'
-            }`}
+            className={`flex-1 py-3 text-center text-sm font-medium relative transition-colors ${selectedTab === 'jogadores' ? 'text-emerald-600' : 'text-slate-600 hover:text-slate-800'
+              }`}
           >
             JOGADORES
+            {selectedTab === 'jogadores' && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />
+            )}
           </button>
           <button
             onClick={() => setSelectedTab('disciplina')}
-            className={`flex-1 py-4 text-center transition-colors ${
-              selectedTab === 'disciplina'
-                ? 'text-emerald-600 border-b-2 border-emerald-600'
-                : 'text-slate-600'
-            }`}
+            className={`flex-1 py-3 text-center text-sm font-medium relative transition-colors ${selectedTab === 'disciplina' ? 'text-emerald-600' : 'text-slate-600 hover:text-slate-800'
+              }`}
           >
             DISCIPLINA
+            {selectedTab === 'disciplina' && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />
+            )}
           </button>
         </div>
       </div>
 
       {/* Content */}
-      <main className="max-w-4xl mx-auto px-4 py-6">
+      <main>
         {selectedTab === 'geral' && (
           <div className="space-y-6">
             {/* Summary Cards */}
             <div className="grid grid-cols-2 gap-4">
               {/* Win Rate */}
-              <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg p-5 text-white shadow-md">
+              <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-5 text-white shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <Trophy className="w-5 h-5" />
                   <span className="text-sm opacity-90">Aproveitamento</span>
@@ -133,7 +122,7 @@ export default function StatisticsPage() {
               </div>
 
               {/* Goals */}
-              <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-lg p-5 text-slate-900 shadow-md">
+              <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl p-5 text-slate-900 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <Target className="w-5 h-5" />
                   <span className="text-sm opacity-90">Saldo de Gols</span>
@@ -143,7 +132,7 @@ export default function StatisticsPage() {
               </div>
 
               {/* Wins */}
-              <div className="bg-white rounded-lg p-5 border border-slate-200 shadow-sm">
+              <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
                 <div className="flex items-center gap-2 mb-2 text-slate-600">
                   <TrendingUp className="w-5 h-5" />
                   <span className="text-sm">Vitórias</span>
@@ -153,7 +142,7 @@ export default function StatisticsPage() {
               </div>
 
               {/* Matches */}
-              <div className="bg-white rounded-lg p-5 border border-slate-200 shadow-sm">
+              <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
                 <div className="flex items-center gap-2 mb-2 text-slate-600">
                   <Calendar className="w-5 h-5" />
                   <span className="text-sm">Total de Jogos</span>
@@ -164,19 +153,18 @@ export default function StatisticsPage() {
             </div>
 
             {/* Current Streak */}
-            <div className="bg-white rounded-lg p-5 border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
               <h3 className="text-slate-900 mb-4">Últimos 5 Resultados</h3>
               <div className="flex items-center justify-center gap-3">
                 {teamStats.currentStreak.split('-').map((result, index) => (
                   <div
                     key={index}
-                    className={`w-12 h-12 rounded-full flex items-center justify-center shadow-sm ${
-                      result === 'V'
-                        ? 'bg-emerald-500 text-white'
-                        : result === 'E'
+                    className={`w-12 h-12 rounded-full flex items-center justify-center shadow-sm ${result === 'V'
+                      ? 'bg-emerald-500 text-white'
+                      : result === 'E'
                         ? 'bg-yellow-400 text-slate-900'
                         : 'bg-red-500 text-white'
-                    }`}
+                      }`}
                   >
                     {result}
                   </div>
@@ -188,42 +176,42 @@ export default function StatisticsPage() {
             </div>
 
             {/* Performance Chart */}
-            <div className="bg-white rounded-lg p-5 border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
               <h3 className="text-slate-900 mb-4">Desempenho ao Longo do Tempo</h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={performanceData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis 
-                      dataKey="date" 
+                    <XAxis
+                      dataKey="date"
                       tick={{ fill: '#64748b', fontSize: 12 }}
                       stroke="#cbd5e1"
                     />
-                    <YAxis 
+                    <YAxis
                       tick={{ fill: '#64748b', fontSize: 12 }}
                       stroke="#cbd5e1"
                     />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: '#fff', 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#fff',
                         border: '1px solid #e2e8f0',
                         borderRadius: '8px',
                         boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
                       }}
                     />
                     <Legend />
-                    <Line 
-                      type="monotone" 
-                      dataKey="goalsScored" 
-                      stroke="#10b981" 
+                    <Line
+                      type="monotone"
+                      dataKey="goalsScored"
+                      stroke="#10b981"
                       strokeWidth={2}
                       name="Gols Marcados"
                       dot={{ fill: '#10b981', r: 4 }}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="goalsConceded" 
-                      stroke="#ef4444" 
+                    <Line
+                      type="monotone"
+                      dataKey="goalsConceded"
+                      stroke="#ef4444"
                       strokeWidth={2}
                       name="Gols Sofridos"
                       dot={{ fill: '#ef4444', r: 4 }}
@@ -238,22 +226,21 @@ export default function StatisticsPage() {
         {selectedTab === 'jogadores' && (
           <div className="space-y-6">
             {/* Top Scorers */}
-            <div className="bg-white rounded-lg border border-slate-200 shadow-sm">
-              <div className="p-5 border-b border-slate-200">
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
+              <div className="p-5 border-b border-slate-100">
                 <h3 className="text-slate-900 flex items-center gap-2">
                   <Trophy className="w-5 h-5 text-yellow-500" />
                   Artilharia
                 </h3>
               </div>
-              <div className="divide-y divide-slate-200">
+              <div className="divide-y divide-slate-100">
                 {topScorers.map((player, index) => (
                   <div key={player.id} className="p-4 flex items-center gap-4 hover:bg-slate-50 transition-colors">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      index === 0 ? 'bg-yellow-400 text-slate-900' :
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${index === 0 ? 'bg-yellow-400 text-slate-900' :
                       index === 1 ? 'bg-slate-300 text-slate-900' :
-                      index === 2 ? 'bg-orange-400 text-white' :
-                      'bg-slate-100 text-slate-600'
-                    }`}>
+                        index === 2 ? 'bg-orange-400 text-white' :
+                          'bg-slate-100 text-slate-600'
+                      }`}>
                       {index + 1}º
                     </div>
                     <div className="flex-1">
@@ -270,20 +257,19 @@ export default function StatisticsPage() {
             </div>
 
             {/* Assists Leaders */}
-            <div className="bg-white rounded-lg border border-slate-200 shadow-sm">
-              <div className="p-5 border-b border-slate-200">
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
+              <div className="p-5 border-b border-slate-100">
                 <h3 className="text-slate-900 flex items-center gap-2">
                   <Activity className="w-5 h-5 text-emerald-500" />
                   Assistências
                 </h3>
               </div>
-              <div className="divide-y divide-slate-200">
+              <div className="divide-y divide-slate-100">
                 {[...topScorers].sort((a, b) => b.assists - a.assists).slice(0, 5).map((player, index) => (
                   <div key={player.id} className="p-4 flex items-center gap-4 hover:bg-slate-50 transition-colors">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      index === 0 ? 'bg-emerald-500 text-white' :
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${index === 0 ? 'bg-emerald-500 text-white' :
                       'bg-slate-100 text-slate-600'
-                    }`}>
+                      }`}>
                       {index + 1}º
                     </div>
                     <div className="flex-1">
@@ -300,7 +286,7 @@ export default function StatisticsPage() {
             </div>
 
             {/* Minutes Played Chart */}
-            <div className="bg-white rounded-lg p-5 border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
               <h3 className="text-slate-900 mb-4 flex items-center gap-2">
                 <Users className="w-5 h-5 text-slate-600" />
                 Minutos Jogados
@@ -309,27 +295,27 @@ export default function StatisticsPage() {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={minutesData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis 
-                      dataKey="name" 
+                    <XAxis
+                      dataKey="name"
                       tick={{ fill: '#64748b', fontSize: 12 }}
                       stroke="#cbd5e1"
                     />
-                    <YAxis 
+                    <YAxis
                       tick={{ fill: '#64748b', fontSize: 12 }}
                       stroke="#cbd5e1"
                     />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: '#fff', 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#fff',
                         border: '1px solid #e2e8f0',
                         borderRadius: '8px',
                         boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
                       }}
                       formatter={(value) => [`${value} min`, 'Minutos']}
                     />
-                    <Bar 
-                      dataKey="minutes" 
-                      fill="#10b981" 
+                    <Bar
+                      dataKey="minutes"
+                      fill="#10b981"
                       radius={[8, 8, 0, 0]}
                     />
                   </BarChart>
@@ -343,7 +329,7 @@ export default function StatisticsPage() {
           <div className="space-y-6">
             {/* Discipline Overview */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-yellow-400 rounded-lg p-5 text-slate-900 shadow-md">
+              <div className="bg-yellow-400 rounded-2xl p-5 text-slate-900 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-4 h-5 bg-slate-900 rounded-sm opacity-90"></div>
                   <span className="text-sm opacity-90">Cartões Amarelos</span>
@@ -351,7 +337,7 @@ export default function StatisticsPage() {
                 <div className="text-3xl">23</div>
               </div>
 
-              <div className="bg-red-600 rounded-lg p-5 text-white shadow-md">
+              <div className="bg-red-600 rounded-2xl p-5 text-white shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-4 h-5 bg-white rounded-sm opacity-90"></div>
                   <span className="text-sm opacity-90">Cartões Vermelhos</span>
@@ -361,11 +347,11 @@ export default function StatisticsPage() {
             </div>
 
             {/* Discipline Table */}
-            <div className="bg-white rounded-lg border border-slate-200 shadow-sm">
-              <div className="p-5 border-b border-slate-200">
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
+              <div className="p-5 border-b border-slate-100">
                 <h3 className="text-slate-900">Ranking de Cartões</h3>
               </div>
-              <div className="divide-y divide-slate-200">
+              <div className="divide-y divide-slate-100">
                 {disciplineStats.map((player, index) => (
                   <div key={index} className="p-4 flex items-center gap-4">
                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 text-slate-600">
@@ -394,7 +380,7 @@ export default function StatisticsPage() {
             </div>
 
             {/* Fair Play Message */}
-            <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-5">
+            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
                   <Trophy className="w-5 h-5 text-white" />
@@ -410,8 +396,6 @@ export default function StatisticsPage() {
           </div>
         )}
       </main>
-
-      
     </div>
   );
 }

@@ -164,47 +164,35 @@ function PartidasContent() {
   }
 
   return (
-    <div className="bg-gray-50 -m-6 lg:-m-8">
-      {/* Header */}
-      <div className="bg-blue-600 text-white px-6 py-8">
-        <h1 className="text-2xl font-bold mb-1">MeuTime FC</h1>
-        <p className="text-white/90">Partidas do Garra FC</p>
-      </div>
-
-      {/* Tabs */}
-      <div className="bg-white border-b border-gray-200 px-6">
-        <div className="flex gap-8 justify-center">
+    <div className="space-y-6">
+      {/* Tabs padronizadas */}
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="flex">
           <button
             onClick={() => setActiveTab("proximos")}
-            className={`py-4 px-2 font-medium text-sm transition-colors relative ${
-              activeTab === "proximos"
-                ? "text-gray-900 font-semibold"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
+            className={`flex-1 py-3 text-center text-sm font-medium relative transition-colors ${activeTab === "proximos" ? "text-emerald-600" : "text-slate-600 hover:text-slate-800"
+              }`}
           >
             PRÓXIMOS JOGOS
             {activeTab === "proximos" && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-500" />
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />
             )}
           </button>
           <button
             onClick={() => setActiveTab("finalizados")}
-            className={`py-4 px-2 font-medium text-sm transition-colors relative ${
-              activeTab === "finalizados"
-                ? "text-gray-900 font-semibold"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
+            className={`flex-1 py-3 text-center text-sm font-medium relative transition-colors ${activeTab === "finalizados" ? "text-emerald-600" : "text-slate-600 hover:text-slate-800"
+              }`}
           >
             JOGOS FINALIZADOS
             {activeTab === "finalizados" && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-500" />
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />
             )}
           </button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="px-6 py-6 space-y-4 max-w-4xl mx-auto">
+      <div className="space-y-4">
         {activeTab === "proximos" &&
           upcomingMatches.map((match) => (
             <Card key={match.id} className="bg-white shadow-sm">
@@ -346,11 +334,11 @@ function PartidasContent() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
           onClick={() => setIsModalOpen(false)}
         >
-          <div 
+          <div
             className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >

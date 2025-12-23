@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
-import { ArrowLeft, UploadCloud } from "lucide-react"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { ArrowLeft, UploadCloud, X } from "lucide-react"
 
 type TeamForm = {
   nome: string
@@ -16,15 +17,16 @@ type TeamForm = {
 }
 
 const UFs = [
-  "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA",
-  "MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN",
-  "RS","RO","RR","SC","SP","SE","TO"
+  "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA",
+  "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN",
+  "RS", "RO", "RR", "SC", "SP", "SE", "TO"
 ]
 
 export default function MeuTimePage() {
   const [form, setForm] = useState<TeamForm>({ nome: "", cidade: "", uf: "", fundacao: "" })
   const [logoUrl, setLogoUrl] = useState<string>("")
   const [saving, setSaving] = useState(false)
+  const [showRemoveDialog, setShowRemoveDialog] = useState(false)
   const fileRef = useRef<HTMLInputElement | null>(null)
 
   function handleChange<K extends keyof TeamForm>(key: K, value: string) {
@@ -36,6 +38,14 @@ export default function MeuTimePage() {
     if (!file) return
     const url = URL.createObjectURL(file)
     setLogoUrl(url)
+  }
+
+  function handleRemoveLogo() {
+    setLogoUrl("")
+    if (fileRef.current) {
+      fileRef.current.value = ""
+    }
+    setShowRemoveDialog(false)
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -64,21 +74,46 @@ export default function MeuTimePage() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center gap-4 mb-6">
-            <div
-              className="flex size-48 md:size-64 items-center justify-center  rounded-full border bg-muted cursor-pointer hover:ring-2 hover:ring-ring/50 transition"
-              onClick={() => fileRef.current?.click()}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") fileRef.current?.click()
-              }}
-            >
-              {logoUrl ? (
-                <img src={logoUrl} alt="Brasão do time" className="size-full object-cover" />
-              ) : (
-                <UploadCloud className="size-12 text-muted-foreground" />
-              )}
-            </div>
+            {logoUrl ? (
+              <div className="relative group">
+                <div
+                  className="flex size-32 items-center justify-center rounded-full border bg-muted cursor-pointer hover:ring-2 hover:ring-ring/50 transition"
+                  onClick={() => fileRef.current?.click()}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") fileRef.current?.click()
+                  }}
+                >
+                  <img src={logoUrl} alt="Brasão do time" className="size-full object-cover rounded-full" />
+                </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setShowRemoveDialog(true)
+                  }}
+                  className="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 text-white"
+                  aria-label="Remover brasão"
+                >
+                  <X className="size-5" />
+                  <span className="text-xs font-medium">Remover brasão</span>
+                </button>
+              </div>
+            ) : (
+              <div className="text-center space-y-3">
+                <p className="text-sm text-muted-foreground">Faça upload do brasão do time</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => fileRef.current?.click()}
+                  className="gap-2"
+                >
+                  <UploadCloud className="size-4" />
+                  Selecionar arquivo
+                </Button>
+              </div>
+            )}
             <Input ref={fileRef} id="brasao" type="file" accept="image/*" onChange={handleLogoChange} className="sr-only" />
           </div>
           <form className="grid grid-cols-1 gap-6 md:grid-cols-2" onSubmit={handleSubmit}>
@@ -113,11 +148,11 @@ export default function MeuTimePage() {
               <Input id="fundacao" type="date" value={form.fundacao} onChange={(e) => handleChange("fundacao", e.target.value)} required />
             </div>
 
-            
+
 
             <div className="md:col-span-2 flex justify-end gap-2">
               <Button type="button" variant="outline">Cancelar</Button>
-              <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700" disabled={saving}>
+              <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={saving}>
                 {saving ? "Salvando..." : "Salvar"}
               </Button>
             </div>
@@ -125,6 +160,25 @@ export default function MeuTimePage() {
         </CardContent>
         <CardFooter />
       </Card>
+
+      <Dialog open={showRemoveDialog} onOpenChange={setShowRemoveDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Remover brasão</DialogTitle>
+            <DialogDescription>
+              Tem certeza que deseja remover o brasão do time? Esta ação não pode ser desfeita.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setShowRemoveDialog(false)}>
+              Cancelar
+            </Button>
+            <Button type="button" className="bg-red-600 hover:bg-red-700" onClick={handleRemoveLogo}>
+              Remover
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

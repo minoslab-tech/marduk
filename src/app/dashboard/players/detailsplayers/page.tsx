@@ -126,110 +126,125 @@ export default function PlayerDetailsPage() {
   const win = (m: MatchItem) => m.result.team > m.result.opp
   const draw = (m: MatchItem) => m.result.team === m.result.opp
 
-  const headerGradient = useMemo(
-    () =>
-      "relative overflow-hidden bg-gradient-to-tr from-slate-800 to-slate-900",
-    []
-  )
+  const headerGradient = useMemo(() => "", [])
 
   return (
     <div className="space-y-6">
-      <section className={headerGradient}>
-        <div className="px-6 pt-6 flex items-center justify-between  relative z-10">
-          <Link href="/dashboard/players" className="text-white/80 hover:text-white flex items-center gap-2">
-            <ArrowLeft className="size-5" /> Voltar
-          </Link>
-          <Button className="bg-yellow-400 text-black hover:bg-yellow-500" aria-label="Editar">
-            <Pencil className="size-4" /> Editar
-          </Button>
-        </div>
+      {/* Header padronizado em Card */}
+      <div className="flex items-center gap-2 text-slate-600">
+        <Link href="/dashboard/players" className="flex items-center gap-2 hover:text-slate-900">
+          <ArrowLeft className="size-5" /> Voltar
+        </Link>
+      </div>
 
-        <div className="px-6 py-6 border-t border-white/10 relative z-10">
+      <Card className="bg-white border border-slate-100 rounded-2xl shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
+        <CardContent className="p-6">
           <div className="flex items-center gap-6">
             <Avatar className="size-16">
-              <AvatarFallback className="bg-green-100 text-green-700 font-semibold text-lg">
+              <AvatarFallback className="bg-emerald-50 text-emerald-700 font-semibold text-lg">
                 {initials(player.name)}
               </AvatarFallback>
             </Avatar>
-            <div className="text-white">
-              <h2 className="text-xl font-semibold">{player.name}</h2>
-              <p className="text-sm text-white/80">{player.fullName}</p>
-              <p className="text-sm text-white/80">{player.age} anos • {formatDate(player.birthDate)}</p>
+            <div className="flex-1">
+              <h2 className="text-xl font-semibold text-slate-900">{player.name}</h2>
+              <p className="text-sm text-slate-600">{player.fullName}</p>
+              <p className="text-sm text-slate-600">{player.age} anos • {formatDate(player.birthDate)}</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {player.roles.map((r) => (
-                  <Badge key={r} className="bg-emerald-600 text-white border-none">{r}</Badge>
+                  <Badge key={r} className="bg-emerald-100 text-emerald-800 border-emerald-200">{r}</Badge>
                 ))}
               </div>
-              <div className="mt-4 flex gap-3">
-                <Button className="bg-green-600 hover:bg-green-700">
-                  <Phone className="size-4" aria-hidden /> WhatsApp
-                </Button>
-                <Button variant="outline" className="bg-white/10 text-white">
-                  <Mail className="size-4" aria-hidden /> E-mail
-                </Button>
-              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                <Phone className="size-4" aria-hidden /> WhatsApp
+              </Button>
+              <Button variant="outline">
+                <Mail className="size-4" aria-hidden /> E-mail
+              </Button>
+              <Button variant="outline" aria-label="Editar">
+                <Pencil className="size-4" /> Editar
+              </Button>
             </div>
           </div>
-        </div>
-      </section>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="bg-green-50">
+        <Card className="bg-white border border-slate-100 rounded-2xl shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
           <CardContent className="flex items-center gap-3 py-6">
-            <Trophy className="size-5 text-emerald-600" />
+            <div className="w-9 h-9 rounded-full bg-emerald-50 flex items-center justify-center">
+              <Trophy className="size-5 text-emerald-600" />
+            </div>
             <div>
-              <p className="text-2xl font-semibold text-emerald-700">{player.stats.matches}</p>
-              <p className="text-sm text-emerald-800/70">Jogos Disputados</p>
+              <p className="text-2xl font-semibold text-slate-900">{player.stats.matches}</p>
+              <p className="text-sm text-slate-600">Jogos Disputados</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-blue-50">
+        <Card className="bg-white border border-slate-100 rounded-2xl shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
           <CardContent className="flex items-center gap-3 py-6">
-            <Clock className="size-5 text-blue-600" />
+            <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center">
+              <Clock className="size-5 text-blue-600" />
+            </div>
             <div>
-              <p className="text-2xl font-semibold text-blue-700">{player.stats.minutes}'</p>
-              <p className="text-sm text-blue-800/70">Minutos Jogados</p>
+              <p className="text-2xl font-semibold text-slate-900">{player.stats.minutes}'</p>
+              <p className="text-sm text-slate-600">Minutos Jogados</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-violet-50">
+        <Card className="bg-white border border-slate-100 rounded-2xl shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
           <CardContent className="flex items-center gap-3 py-6">
-            <Target className="size-5 text-violet-600" />
+            <div className="w-9 h-9 rounded-full bg-violet-50 flex items-center justify-center">
+              <Target className="size-5 text-violet-600" />
+            </div>
             <div>
-              <p className="text-2xl font-semibold text-violet-700">{player.stats.goalInv}</p>
-              <p className="text-sm text-violet-800/70">Participação em Gols</p>
+              <p className="text-2xl font-semibold text-slate-900">{player.stats.goalInv}</p>
+              <p className="text-sm text-slate-600">Participação em Gols</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-amber-50">
+        <Card className="bg-white border border-slate-100 rounded-2xl shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
           <CardContent className="flex items-center gap-3 py-6">
-            <Star className="size-5 text-amber-600" />
+            <div className="w-9 h-9 rounded-full bg-amber-50 flex items-center justify-center">
+              <Star className="size-5 text-amber-600" />
+            </div>
             <div>
-              <p className="text-2xl font-semibold text-amber-700">{player.stats.avgRating.toFixed(1)}</p>
-              <p className="text-sm text-amber-800/70">Média de Nota</p>
+              <p className="text-2xl font-semibold text-slate-900">{player.stats.avgRating.toFixed(1)}</p>
+              <p className="text-sm text-slate-600">Média de Nota</p>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="flex items-center justify-between border-b">
-        <button
-          className={`px-3 py-2 text-sm ${activeTab === "stats" ? "text-emerald-700 border-b-2 border-emerald-600" : "text-muted-foreground"}`}
-          onClick={() => setActiveTab("stats")}
-        >
-          ESTATÍSTICAS
-        </button>
-        <button
-          className={`px-3 py-2 text-sm ${activeTab === "history" ? "text-emerald-700 border-b-2 border-emerald-600" : "text-muted-foreground"}`}
-          onClick={() => setActiveTab("history")}
-        >
-          HISTÓRICO DE JOGOS
-        </button>
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="flex">
+          <button
+            onClick={() => setActiveTab("stats")}
+            className={`flex-1 py-3 text-center text-sm font-medium relative transition-colors ${activeTab === "stats" ? "text-emerald-600" : "text-slate-600 hover:text-slate-800"
+              }`}
+          >
+            ESTATÍSTICAS
+            {activeTab === "stats" && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab("history")}
+            className={`flex-1 py-3 text-center text-sm font-medium relative transition-colors ${activeTab === "history" ? "text-emerald-600" : "text-slate-600 hover:text-slate-800"
+              }`}
+          >
+            HISTÓRICO DE JOGOS
+            {activeTab === "history" && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500" />
+            )}
+          </button>
+        </div>
       </div>
 
       {activeTab === "stats" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
+          <Card className="bg-white border border-slate-100 rounded-2xl shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-emerald-700">
                 Indicadores de Ataque
@@ -245,7 +260,7 @@ export default function PlayerDetailsPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white border border-slate-100 rounded-2xl shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
             <CardHeader>
               <CardTitle>Presença e Disciplina</CardTitle>
             </CardHeader>
@@ -263,7 +278,7 @@ export default function PlayerDetailsPage() {
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-2">
+          <Card className="lg:col-span-2 bg-white border border-slate-100 rounded-2xl shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
             <CardHeader>
               <CardTitle>Desempenho por Mês</CardTitle>
             </CardHeader>
@@ -282,7 +297,8 @@ export default function PlayerDetailsPage() {
           {history.map((m, i) => (
             <Card
               key={`${m.opponent}-${i}`}
-              className={win(m) ? "border-emerald-400" : draw(m) ? "border-blue-300" : "border-red-300"}
+              className={`bg-white border border-slate-100 rounded-2xl shadow-[0_10px_30px_rgba(15,23,42,0.06)] ${win(m) ? "ring-1 ring-emerald-200" : draw(m) ? "ring-1 ring-blue-200" : "ring-1 ring-red-200"
+                }`}
             >
               <CardHeader className="flex-row items-center justify-between">
                 <div>

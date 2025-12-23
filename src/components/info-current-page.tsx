@@ -7,6 +7,9 @@ export const InfoCurrentPage = () => {
   const pathname = usePathname();
 
   function defineTitleBasedOnPathname() {
+    if (pathname?.startsWith("/dashboard/partidas/")) {
+      return { title: "Partida", description: "Detalhes e estatísticas da partida" };
+    }
     switch (pathname) {
       case "/dashboard":
         return { title: "Início", description: "Visão geral do sistema" };
@@ -18,6 +21,12 @@ export const InfoCurrentPage = () => {
         return { title: "Cadastros", description: "Gerencie os cadastros aqui" };
       case "/dashboard/players":
         return { title: "Jogadores", description: "Visualize os jogadores aqui" };
+      case "/dashboard/players/detailsplayers":
+        return { title: "Jogador", description: "Detalhes e desempenho do jogador" };
+      case "/dashboard/partidas":
+        return { title: "Partidas", description: "Gerencie e acompanhe as partidas" };
+      case "/dashboard/statistics":
+        return { title: "Estatísticas", description: "Análises e desempenho do time" };
       case "/dashboard/help":
         return { title: "Ajuda / Suporte", description: "Obtenha ajuda e suporte aqui" };
       case "/dashboard/profile":
