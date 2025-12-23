@@ -1,6 +1,8 @@
 import NextAuth, { DefaultSession } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { prisma } from "./lib/db"
+import { verifyPassword, isValidEmail, sanitizeEmail } from "./lib/security"
+import { checkRateLimit, getRemainingTime } from "./lib/rate-limit"
 
 declare module "next-auth" {
   interface Session {
@@ -11,15 +13,6 @@ declare module "next-auth" {
   interface User {
     id: string
   }
-}
-
-async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
-  const encoder = new TextEncoder()
-  const data = encoder.encode(password)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-  return hash === hashedPassword
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -34,22 +27,40 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null
         }
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email as string,
-          },
-        })
+        const email = sanitizeEmail(credentials.email as string)
+        const password = credentials.password as string
 
-        if (!user) {
+        // Validação de email
+        if (!isValidEmail(email)) {
           return null
         }
 
-        const passwordMatch = await verifyPassword(
-          credentials.password as string,
-          user.password
-        )
+        // Rate limiting por email para prevenir brute force
+        const rateLimitKey = `login:${email}`
+        if (!checkRateLimit(rateLimitKey, 5, 15 * 60 * 1000)) {
+          // Log apenas em desenvolvimento - não expor informação sensível
+          if (process.env.NODE_ENV === "development") {
+            console.warn(
+              `Rate limit excedido para ${email}. Tentar novamente em ${Math.ceil(getRemainingTime(rateLimitKey) / 60000)} minutos`
+            )
+          }
+          return null
+        }
 
-        if (!passwordMatch) {
+        const user = await prisma.user.findUnique({
+          where: {
+            email,
+          },
+        })
+
+        // Não revelar se o usuário existe ou não (timing attack mitigation)
+        // Sempre executar verificação de hash mesmo se usuário não existir
+        const dummyHash = "$2b$12$dummy.hash.to.prevent.timing.attacks"
+        const hashToCheck = user?.password || dummyHash
+
+        const passwordMatch = await verifyPassword(password, hashToCheck)
+
+        if (!user || !passwordMatch) {
           return null
         }
 

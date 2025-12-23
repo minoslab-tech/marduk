@@ -1,34 +1,68 @@
 import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server"
-
-export const config = {
-  runtime: 'nodejs',
-};
-
-async function hashPassword(password: string): Promise<string> {
-  const encoder = new TextEncoder()
-  const data = encoder.encode(password)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-}
+import {
+  hashPassword,
+  isValidEmail,
+  validatePasswordStrength,
+  sanitizeEmail,
+  sanitizeInput,
+} from "@/lib/security"
+import { checkRateLimit } from "@/lib/rate-limit"
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password } = await request.json()
+    const body = await request.json()
+    const { name, email: rawEmail, password } = body
 
-    // Validações
-    if (!name || !email || !password) {
+    // Validações básicas
+    if (!name || !rawEmail || !password) {
       return NextResponse.json(
         { error: "Todos os campos são obrigatórios" },
         { status: 400 }
       )
     }
 
-    if (password.length < 6) {
+    // Sanitização de inputs
+    const sanitizedName = sanitizeInput(name)
+    const email = sanitizeEmail(rawEmail)
+    const sanitizedPassword = password.trim()
+
+    // Validação de nome
+    if (sanitizedName.length < 2 || sanitizedName.length > 100) {
       return NextResponse.json(
-        { error: "A senha deve ter no mínimo 6 caracteres" },
+        { error: "O nome deve ter entre 2 e 100 caracteres" },
         { status: 400 }
+      )
+    }
+
+    // Validação de email
+    if (!isValidEmail(email)) {
+      return NextResponse.json(
+        { error: "Email inválido" },
+        { status: 400 }
+      )
+    }
+
+    // Validação de força da senha
+    const passwordValidation = validatePasswordStrength(sanitizedPassword)
+    if (!passwordValidation.valid) {
+      return NextResponse.json(
+        { error: passwordValidation.errors.join(", ") },
+        { status: 400 }
+      )
+    }
+
+    // Rate limiting por IP
+    const clientIp =
+      request.headers.get("x-forwarded-for")?.split(",")[0] ||
+      request.headers.get("x-real-ip") ||
+      "unknown"
+    const rateLimitKey = `register:${clientIp}`
+    if (!checkRateLimit(rateLimitKey, 3, 60 * 60 * 1000)) {
+      // 3 tentativas por hora por IP
+      return NextResponse.json(
+        { error: "Muitas tentativas. Tente novamente mais tarde." },
+        { status: 429 }
       )
     }
 
@@ -45,12 +79,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Hash da senha
-    const hashedPassword = await hashPassword(password)
+    const hashedPassword = await hashPassword(sanitizedPassword)
 
     // Criar usuário
     const user = await prisma.user.create({
       data: {
-        name,
+        name: sanitizedName,
         email,
         password: hashedPassword,
       },
@@ -68,9 +102,14 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    console.error("Erro ao criar usuário:", error)
+    // Não expor detalhes do erro em produção
+    const isDevelopment = process.env.NODE_ENV === "development"
+    if (isDevelopment) {
+      console.error("Erro ao criar usuário:", error)
+    }
+
     return NextResponse.json(
-      { error: "Erro ao criar conta" },
+      { error: "Erro ao criar conta. Tente novamente mais tarde." },
       { status: 500 }
     )
   }
