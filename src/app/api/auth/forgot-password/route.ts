@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/db"
+import { db } from "@/db"
+import { users } from "@/db/schema"
+import { eq } from "drizzle-orm"
 import crypto from "crypto"
 import { isValidEmail, sanitizeEmail } from "@/lib/security"
 import { checkRateLimit } from "@/lib/rate-limit"
@@ -51,9 +53,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email },
-    })
+    const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1)
 
     // Por segurança, sempre retorne sucesso mesmo se o usuário não existir
     // Isso previne enumeração de emails

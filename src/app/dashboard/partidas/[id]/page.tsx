@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
+import { usePartida } from "@/hooks/usePartidas"
 
 // Dados mockados das partidas
 const matchData: Record<

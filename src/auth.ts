@@ -1,6 +1,8 @@
 import NextAuth, { DefaultSession } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { prisma } from "./lib/db"
+import { db } from "./db"
+import { users } from "./db/schema"
+import { eq } from "drizzle-orm"
 import { verifyPassword, isValidEmail, sanitizeEmail } from "./lib/security"
 import { checkRateLimit, getRemainingTime } from "./lib/rate-limit"
 
@@ -47,11 +49,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null
         }
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email,
-          },
-        })
+        const [user] = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, email))
+          .limit(1)
 
         // Não revelar se o usuário existe ou não (timing attack mitigation)
         // Sempre executar verificação de hash mesmo se usuário não existir

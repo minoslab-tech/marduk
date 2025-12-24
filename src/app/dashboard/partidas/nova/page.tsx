@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
@@ -8,23 +8,54 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { criarPartida } from "@/hooks/usePartidas"
+import { useTimes } from "@/hooks/useTimes"
+import { toast } from "react-hot-toast"
 
 export default function NovaPartidaPage() {
   const router = useRouter()
+  const { times, loading: loadingTimes } = useTimes()
+  const [submitting, setSubmitting] = useState(false)
   const [formData, setFormData] = useState({
+    timeId: "",
     data_hora: "",
     local: "",
     adversario_nome: "",
     tipo: "",
-    status: "",
+    status: "agendada",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Auto-selecionar o primeiro time quando carregar
+  useEffect(() => {
+    if (times.length > 0 && !formData.timeId) {
+      setFormData((prev) => ({ ...prev, timeId: times[0].id }))
+    }
+  }, [times, formData.timeId])
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Aqui você pode adicionar a lógica para salvar a partida
-    console.log("Dados do formulário:", formData)
-    // Redirecionar para a página de partidas após salvar
-    router.push("/dashboard/partidas")
+    
+    if (!formData.timeId) {
+      toast.error("Selecione um time")
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      await criarPartida({
+        timeId: formData.timeId,
+        dataHora: formData.data_hora,
+        local: formData.local,
+        adversarioNome: formData.adversario_nome,
+        tipo: formData.tipo,
+        status: formData.status,
+      })
+      router.push("/dashboard/partidas")
+    } catch (error) {
+      // Erro já tratado no hook
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const handleChange = (
@@ -61,6 +92,27 @@ export default function NovaPartidaPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Time */}
+              {times.length > 0 && (
+                <div className="space-y-2">
+                  <Label htmlFor="timeId">Time</Label>
+                  <select
+                    id="timeId"
+                    name="timeId"
+                    value={formData.timeId}
+                    onChange={handleChange}
+                    required
+                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                  >
+                    {times.map((time) => (
+                      <option key={time.id} value={time.id}>
+                        {time.nome}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               {/* Data e Hora */}
               <div className="space-y-2">
                 <Label htmlFor="data_hora">Data e Hora</Label>
@@ -146,11 +198,16 @@ export default function NovaPartidaPage() {
                   variant="outline"
                   onClick={() => router.push("/dashboard/partidas")}
                   className="flex-1"
+                  disabled={submitting}
                 >
                   Cancelar
                 </Button>
-                <Button type="submit" className="flex-1 bg-green-500 hover:bg-green-600 text-white">
-                  Salvar Partida
+                <Button
+                  type="submit"
+                  className="flex-1 bg-green-500 hover:bg-green-600 text-white"
+                  disabled={submitting}
+                >
+                  {submitting ? "Salvando..." : "Salvar Partida"}
                 </Button>
               </div>
             </form>
@@ -160,4 +217,3 @@ export default function NovaPartidaPage() {
     </div>
   )
 }
-

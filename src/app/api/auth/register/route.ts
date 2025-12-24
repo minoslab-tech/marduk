@@ -1,4 +1,6 @@
-import { prisma } from "@/lib/db";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server"
 import {
   hashPassword,
@@ -67,9 +69,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar se o email já existe
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    })
+    const [existingUser] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1)
 
     if (existingUser) {
       return NextResponse.json(
@@ -82,13 +86,14 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await hashPassword(sanitizedPassword)
 
     // Criar usuário
-    const user = await prisma.user.create({
-      data: {
+    const [user] = await db
+      .insert(users)
+      .values({
         name: sanitizedName,
         email,
         password: hashedPassword,
-      },
-    })
+      })
+      .returning()
 
     return NextResponse.json(
       {
